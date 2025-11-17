@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>XP Lab</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>Lightning</text></svg>">
+</head>
+<body>
+  <!-- VFX Background -->
+  <div id="vfx-bg">
+    <canvas id="grid-canvas"></canvas>
+    <div id="particles"></div>
+    <div id="scanline"></div>
+  </div>
+
+  <!-- Login Screen -->
+  <div id="login-screen" class="screen">
+    <div class="login-box">
+      <h1>XP<span class="glow">Lab</span></h1>
+      <p>Enter the Lab</p>
+
+      <input type="email" id="email" placeholder="Email" />
+      <input type="password" id="password" placeholder="Password" />
+      <button class="btn primary" onclick="login()">Login</button>
+
+      <div class="or">OR</div>
+
+      <button class="btn discord" onclick="loginWithDiscord()">
+        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDUxMiA1MTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTI1NiAwSDEyOC41TDgwIDEyOC41TDI1NiA1MTJMNDMyIDUxMkwzNjQgMjU2bDEyOC41LTEyOC41SDI1NlYwIiBmaWxsPSIjRkZGRkZGIi8+PC9zdmc+" alt="Discord" class="discord-logo" />
+        Continue with Discord
+      </button>
+    </div>
+  </div>
+
+  <!-- Dashboard -->
+  <div id="dashboard" class="main" style="display:none;">
+    <div class="sidebar">
+      <h2>XP<span class="glow">Lab</span></h2>
+      <div id="user-info"></div>
+      <nav>
+        <a href="#upload">Upload</a>
+        <a href="#products">Products</a>
+        <a href="#users">Users</a>
+        <button class="btn logout" onclick="logout()">Logout</button>
+      </nav>
+    </div>
+
+    <div class="content">
+      <header class="header">
+        <h1>Admin Dashboard</h1>
+        <p>Upload Beats • Manage Users • Dominate</p>
+      </header>
+
+      <!-- Upload -->
+      <section id="upload" class="upload-card">
+        <h2>Upload New Beat</h2>
+        <div id="drop-area">Drop file or click</div>
+        <input type="file" id="file-input" accept="audio/*" hidden />
+        <div class="upload-form" id="upload-form" style="display:none;">
+          <input type="text" placeholder="Beat Name" />
+          <input type="number" placeholder="Price ($)" step="0.01" />
+          <input type="number" placeholder="Discount (%)" />
+          <input type="number" placeholder="Preview (secs)" value="30" />
+          <button class="btn primary" onclick="saveProduct()">Save & List</button>
+        </div>
+        <div id="preview"></div>
+      </section>
+
+      <!-- Products -->
+      <section id="products" class="products">
+        <h2>Live Beats</h2>
+        <div class="grid" id="product-grid"></div>
+      </section>
+
+      <!-- Users -->
+      <section id="users" class="users">
+        <h2>Manage Users</h2>
+        <div id="user-list"></div>
+      </section>
+    </div>
+  </div>
+
+  <script src="auth.js"></script>
+  <script src="dashboard.js"></script>
+  <script src="vfx.js"></script>
+</body>
+</html>

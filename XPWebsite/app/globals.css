@@ -1,0 +1,91 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Orbitron:wght@400;700;900&display=swap');
+
+@layer base {
+  :root {
+    --background: 10 10 15;
+    --foreground: 255 255 255;
+    --card: 26 26 46;
+    --card-foreground: 255 255 255;
+    --popover: 26 26 46;
+    --popover-foreground: 255 255 255;
+    --primary: 0 255 65;
+    --primary-foreground: 10 10 15;
+    --secondary: 42 42 78;
+    --secondary-foreground: 255 255 255;
+    --muted: 26 26 46;
+    --muted-foreground: 156 163 175;
+    --accent: 0 170 255;
+    --accent-foreground: 255 255 255;
+    --destructive: 239 68 68;
+    --destructive-foreground: 255 255 255;
+    --border: 42 42 78;
+    --input: 26 26 46;
+    --ring: 0 255 65;
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-cyber-dark text-foreground font-mono;
+    background-image: 
+      radial-gradient(circle at 50% 50%, rgba(0,255,65,0.05) 0%, transparent 50%),
+      linear-gradient(rgba(0,255,65,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,255,65,0.02) 1px, transparent 1px);
+    background-size: 100% 100%, 50px 50px, 50px 50px;
+    background-attachment: fixed;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer components {
+  .glow-text {
+    text-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
+  }
+  
+  .glow-border {
+    box-shadow: 0 0 10px rgba(0,255,65,0.5), inset 0 0 10px rgba(0,255,65,0.1);
+  }
+  
+  .cyber-button {
+    @apply relative bg-cyber-light border border-neon-green/30 text-neon-green font-mono font-bold uppercase tracking-wider;
+    @apply hover:bg-neon-green/10 hover:border-neon-green hover:shadow-lg hover:shadow-neon-green/25;
+    @apply transition-all duration-300;
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 100%, 10px 100%);
+  }
+  
+  .cyber-card {
+    @apply bg-cyber-light/50 border border-neon-green/20 backdrop-blur-sm;
+    @apply hover:border-neon-green/40 transition-all duration-300;
+    clip-path: polygon(0 0, calc(100% - 5px) 0, 100% calc(100% - 5px), 5px 100%);
+  }
+  
+  .scanline {
+    @apply absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-neon-green to-transparent;
+    @apply animate-scanline opacity-50;
+  }
+  
+  .grid-bg {
+    background-image: 
+      linear-gradient(rgba(0,255,65,0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,255,65,0.1) 1px, transparent 1px);
+    background-size: 50px 50px;
+    animation: grid-move 20s linear infinite;
+  }
+  
+  @keyframes grid-move {
+    0% { background-position: 0 0; }
+    100% { background-position: 50px 50px; }
+  }
+}

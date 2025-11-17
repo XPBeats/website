@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout - Shop Demo</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Your Cart</h1>
+  </header>
+  <nav>
+    <a href="products.html">Continue Shopping</a>
+    <a href="#" onclick="logout()">Logout</a>
+  </nav>
+  <div class="container">
+    <div id="cartItems"></div>
+    <div class="total" id="total"></div>
+    <button onclick="checkout()">Proceed to Checkout</button>
+  </div>
+  <script>
+    function renderCart() {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const cartDiv = document.getElementById('cartItems');
+      const totalDiv = document.getElementById('total');
+
+      if (cart.length === 0) {
+        cartDiv.innerHTML = '<p>Your cart is empty.</p>';
+        totalDiv.textContent = '';
+        return;
+      }
+
+      cartDiv.innerHTML = cart.map(item => `
+        <div class="cart-item">
+          <span>${item.name} (x${item.quantity})</span>
+          <span>$${(item.price * item.quantity).toFixed(2)}</span>
+        </div>
+      `).join('');
+
+      const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      totalDiv.textContent = `Total: $${total.toFixed(2)}`;
+    }
+
+    function checkout() {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      if (cart.length === 0) {
+        alert('Cart is empty!');
+        return;
+      }
+      alert('Payment successful! Order placed. (Demo)');
+      localStorage.removeItem('cart');
+      window.location.href = 'products.html';
+    }
+
+    function logout() {
+      localStorage.removeItem('loggedIn');
+      localStorage.removeItem('cart');
+      window.location.href = 'login.html';
+    }
+
+    // Check login
+    if (localStorage.getItem('loggedIn') !== 'true') {
+      window.location.href = 'login.html';
+    } else {
+      renderCart();
+    }
+  </script>
+</body>
+</html>

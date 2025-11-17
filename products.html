@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Products - Shop Demo</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Shop Demo Products</h1>
+  </header>
+  <nav>
+    <a href="checkout.html">View Cart</a>
+    <a href="#" onclick="logout()">Logout</a>
+  </nav>
+  <div class="container">
+    <div id="productsGrid" class="products-grid"></div>
+  </div>
+  <script>
+    // Sample products (expand as needed)
+    const products = [
+      { id: 1, name: 'Laptop', price: 999, image: 'https://via.placeholder.com/250x150?text=Laptop' },
+      { id: 2, name: 'Phone', price: 699, image: 'https://via.placeholder.com/250x150?text=Phone' },
+      { id: 3, name: 'Headphones', price: 199, image: 'https://via.placeholder.com/250x150?text=Headphones' },
+      { id: 4, name: 'Mouse', price: 29, image: 'https://via.placeholder.com/250x150?text=Mouse' }
+    ];
+
+    function renderProducts() {
+      const grid = document.getElementById('productsGrid');
+      grid.innerHTML = products.map(product => `
+        <div class="product-card">
+          <img src="${product.image}" alt="${product.name}">
+          <h3>${product.name}</h3>
+          <p>$${product.price}</p>
+          <button onclick="addToCart(${product.id})">Add to Cart</button>
+        </div>
+      `).join('');
+    }
+
+    function addToCart(productId) {
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const existing = cart.find(item => item.id === productId);
+      if (existing) {
+        existing.quantity += 1;
+      } else {
+        const product = products.find(p => p.id === productId);
+        cart.push({ ...product, quantity: 1 });
+      }
+      localStorage.setItem('cart', JSON.stringify(cart));
+      alert('Added to cart!');
+    }
+
+    function logout() {
+      localStorage.removeItem('loggedIn');
+      window.location.href = 'login.html';
+    }
+
+    // Check login
+    if (localStorage.getItem('loggedIn') !== 'true') {
+      window.location.href = 'login.html';
+    } else {
+      renderProducts();
+    }
+  </script>
+</body>
+</html>

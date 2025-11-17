@@ -1,0 +1,189 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// NextAuth Models
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  role          Role      @default(USER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts Account[]
+  sessions Session[]
+  orders   Order[]
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// Application Models
+enum Role {
+  USER
+  ADMIN
+}
+
+enum LicenseType {
+  BASIC
+  PREMIUM
+  UNLIMITED
+  EXCLUSIVE
+}
+
+enum OrderStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+model Beat {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  description String?
+  genre       String
+  bpm         Int
+  key         String?
+  mood        String?
+  tags        String[] @default([])
+  
+  // Pricing for each license type
+  basicPrice      Float @default(30.00)
+  premiumPrice    Float @default(60.00)
+  unlimitedPrice  Float @default(150.00)
+  exclusivePrice  Float @default(500.00)
+  
+  // Media files
+  coverImageUrl   String?
+  previewUrl      String // 60-second preview MP3
+  basicFileUrl    String // Basic license file (MP3)
+  premiumFileUrl  String? // Premium license file (WAV)
+  unlimitedFileUrl String? // Unlimited license file (WAV + Stems)
+  exclusiveFileUrl String? // Exclusive license file (Full trackouts)
+  
+  // Status flags
+  isFeatured Boolean @default(false)
+  isFree     Boolean @default(false)
+  isActive   Boolean @default(true)
+  
+  // Analytics
+  plays     Int @default(0)
+  downloads Int @default(0)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  orderItems OrderItem[]
+}
+
+model Order {
+  id              String      @id @default(cuid())
+  userId          String
+  stripeSessionId String?     @unique
+  stripePaymentId String?
+  
+  total           Float
+  status          OrderStatus @default(PENDING)
+  
+  customerEmail   String
+  customerName    String?
+  
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  user  User        @relation(fields: [userId], references: [id])
+  items OrderItem[]
+}
+
+model OrderItem {
+  id          String      @id @default(cuid())
+  orderId     String
+  beatId      String
+  licenseType LicenseType
+  price       Float
+  
+  // License details
+  licenseTerms String?
+  downloadUrl  String?
+  
+  createdAt DateTime @default(now())
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  beat  Beat  @relation(fields: [beatId], references: [id])
+}
+
+model Coupon {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  description String?
+  
+  // Discount type
+  isPercentage Boolean  @default(true)
+  value        Float    // Percentage (0-100) or fixed amount
+  
+  // Usage limits
+  maxUses      Int?     // null = unlimited
+  usedCount    Int      @default(0)
+  
+  // Validity
+  isActive     Boolean  @default(true)
+  expiresAt    DateTime?
+  
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model EmailSubscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  source    String?  // "free_download", "newsletter", etc.
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+}

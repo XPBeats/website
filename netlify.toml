@@ -1,24 +1,8 @@
 [build]
-  command = "npm run build"
-  # No publish directory - let @netlify/plugin-nextjs handle it
+  command = "npm install --legacy-peer-deps && npm run build"
 
 [build.environment]
   NODE_VERSION = "18"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
-
-[build.processing.css]
-  bundle = true
-  minify = true
-
-[build.processing.js]
-  bundle = true
-  minify = true
-
-# For Vercel deployment (remove this if using Netlify)
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-
-  status = 200
